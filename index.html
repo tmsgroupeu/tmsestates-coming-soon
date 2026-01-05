@@ -5,12 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TMS Estates | Beyond Ordinary</title>
     
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
@@ -46,7 +43,8 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             object-fit: cover;
-            /* REMOVED TRANSITION: This allows for an instant cut */
+            /* Instant cut, no fade */
+            transition: none; 
         }
 
         /* Intro is strictly on top */
@@ -56,13 +54,18 @@
         /* Utility to instantly hide intro */
         .hidden-video { display: none !important; }
 
-        /* The Tint Overlay */
+        /* 
+           --- THE MAGIC LAYER (Restored) ---
+           This hides compression artifacts and adds the premium look.
+        */
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
+            /* 1. Navy Tint: Makes colors richer */
             background: rgba(10, 35, 66, 0.4); 
-            backdrop-filter: blur(3px);
+            /* 2. Micro-Blur: Hides pixelation */
+            backdrop-filter: blur(3px); 
             -webkit-backdrop-filter: blur(3px);
             z-index: -1;
         }
@@ -93,27 +96,18 @@
             z-index: 5;
         }
 
-        /* 
-           UPDATED BADGE: SOLID FILL 
-           Vibrant Gold Background + Dark Navy Text
-        */
         .status-badge {
-            background-color: var(--gold); /* Solid Gold Fill */
-            color: var(--navy); /* Dark Text for Contrast */
-            
+            background-color: var(--gold);
+            color: var(--navy);
             padding: 10px 24px;
             border-radius: 50px;
             font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 35px;
-            font-weight: 800; /* Extra Bold */
+            font-weight: 800;
             border: none;
-            
-            /* Clean Animation */
             animation: fadeInDown 1s ease-out;
-            
-            /* Strong Shadow to pop off background */
             box-shadow: 0 4px 20px rgba(197, 160, 89, 0.4);
         }
 
@@ -128,10 +122,7 @@
             animation: fadeInUp 1s ease-out 0.2s backwards;
         }
 
-        .gold-text { 
-            color: var(--gold); 
-            display: block; 
-        }
+        .gold-text { color: var(--gold); display: block; }
 
         p.message {
             font-size: 1.1rem;
@@ -174,11 +165,8 @@
             text-shadow: 0 2px 5px rgba(0,0,0,0.5);
         }
 
-        .contact-links a:hover {
-            color: var(--gold);
-        }
+        .contact-links a:hover { color: var(--gold); }
 
-        /* --- ANIMATIONS --- */
         @keyframes fadeInDown {
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -188,7 +176,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- MOBILE --- */
         @media (max-width: 768px) {
             h1 { font-size: 3rem; margin-bottom: 15px; }
             .logo { width: 130px; }
@@ -202,18 +189,18 @@
 <body>
 
     <div class="video-wrapper">
-        <!-- 1. The Loop (Bottom layer) -->
-        <video id="videoLoop" class="bg-media" loop muted playsinline>
+        <!-- Loop Video -->
+        <video id="videoLoop" class="bg-media" loop muted playsinline preload="auto">
             <source src="loop.mp4" type="video/mp4">
         </video>
 
-        <!-- 2. The Intro (Top layer) -->
-        <!-- 'autoplay' ensures it starts immediately -->
-        <video id="videoIntro" class="bg-media" autoplay muted playsinline>
+        <!-- Intro Video -->
+        <video id="videoIntro" class="bg-media" autoplay muted playsinline preload="auto">
             <source src="intro.mp4" type="video/mp4">
         </video>
     </div>
 
+    <!-- This overlay handles the Blur/Tint -->
     <div class="overlay"></div>
 
     <div class="navbar">
@@ -221,20 +208,15 @@
     </div>
 
     <div class="hero-container">
-        
-        <!-- SOLID GOLD BADGE -->
         <div class="status-badge">New Website Under Development</div>
-
         <h1>
             Beyond Ordinary
             <span class="gold-text">Estates</span>
         </h1>
-
         <p class="message">
             We are crafting a new digital experience for prestigious residences in Cyprus.
             <span class="coming-soon-highlight">Coming Soon</span>
         </p>
-
         <div class="contact-links">
             <a href="mailto:info@tmsestates.com">
                 <i data-lucide="mail" style="width:16px;"></i> Enquire
@@ -243,29 +225,28 @@
                 <i data-lucide="phone" style="width:16px;"></i> Contact Us
             </a>
         </div>
-
     </div>
 
     <script>
         lucide.createIcons();
 
-        // SEAMLESS VIDEO LOGIC
         const intro = document.getElementById('videoIntro');
         const loop = document.getElementById('videoLoop');
 
-        // Note: Browsers handle autoplay differently. 
-        // We rely on the 'autoplay' attribute for instant start.
-        
+        // Pre-roll Logic
+        intro.addEventListener('timeupdate', () => {
+            if ((intro.currentTime > intro.duration - 0.5) && loop.paused) {
+                loop.play().catch(e => console.log("Auto-play blocked"));
+            }
+        });
+
+        // Instant Cut Logic
         intro.addEventListener('ended', () => {
-            // 1. Ensure loop is playing
             loop.play();
-            
-            // 2. Instantly remove intro from document flow or hide it completely
-            // This prevents any "fade" frames. It cuts straight to the layer below.
             intro.classList.add('hidden-video'); 
         });
 
-        // Fail-safe: If intro errors (e.g. file missing), show loop immediately
+        // Fallback Logic
         intro.addEventListener('error', () => {
             intro.classList.add('hidden-video'); 
             loop.play();
