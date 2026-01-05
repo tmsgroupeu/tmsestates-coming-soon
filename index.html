@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TMS Estates | Beyond Ordinary</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --navy: #0A2342;
+            --gold: #C5A059;
+            --white: #ffffff;
+        }
+        
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--navy);
+            color: var(--white);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* --- VIDEO CONTAINER --- */
+        .video-wrapper {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2;
+            background: var(--navy);
+        }
+
+        .bg-media {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            /* REMOVED TRANSITION: This allows for an instant cut */
+        }
+
+        /* Intro is strictly on top */
+        #videoIntro { z-index: 2; }
+        #videoLoop  { z-index: 1; } 
+        
+        /* Utility to instantly hide intro */
+        .hidden-video { display: none !important; }
+
+        /* The Tint Overlay */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(10, 35, 66, 0.4); 
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: -1;
+        }
+
+        /* --- HEADER --- */
+        .navbar {
+            position: absolute;
+            top: 0; width: 100%;
+            padding: 30px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+        
+        .logo { width: 160px; height: auto; }
+
+        /* --- CONTENT --- */
+        .hero-container {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            z-index: 5;
+        }
+
+        /* 
+           UPDATED BADGE: SOLID FILL 
+           Vibrant Gold Background + Dark Navy Text
+        */
+        .status-badge {
+            background-color: var(--gold); /* Solid Gold Fill */
+            color: var(--navy); /* Dark Text for Contrast */
+            
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+            font-weight: 800; /* Extra Bold */
+            border: none;
+            
+            /* Clean Animation */
+            animation: fadeInDown 1s ease-out;
+            
+            /* Strong Shadow to pop off background */
+            box-shadow: 0 4px 20px rgba(197, 160, 89, 0.4);
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 5rem;
+            line-height: 1;
+            letter-spacing: -1px;
+            margin-bottom: 20px;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+
+        .gold-text { 
+            color: var(--gold); 
+            display: block; 
+        }
+
+        p.message {
+            font-size: 1.1rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto 50px auto; 
+            line-height: 1.6;
+            color: rgba(255,255,255,0.95);
+            animation: fadeInUp 1s ease-out 0.4s backwards;
+        }
+
+        .coming-soon-highlight {
+            display: block;        
+            margin-top: 25px;      
+            font-size: 1.5rem;     
+            font-weight: 600;      
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--white);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 30px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            animation: fadeInUp 1s ease-out 0.6s backwards;
+        }
+
+        .contact-links a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .contact-links a:hover {
+            color: var(--gold);
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; margin-bottom: 15px; }
+            .logo { width: 130px; }
+            p.message { font-size: 0.95rem; max-width: 90%; }
+            .coming-soon-highlight { font-size: 1.2rem; margin-top: 20px; }
+            .contact-links { flex-direction: column; gap: 20px; }
+            .navbar { padding: 20px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="video-wrapper">
+        <!-- 1. The Loop (Bottom layer) -->
+        <video id="videoLoop" class="bg-media" loop muted playsinline>
+            <source src="loop.mp4" type="video/mp4">
+        </video>
+
+        <!-- 2. The Intro (Top layer) -->
+        <!-- 'autoplay' ensures it starts immediately -->
+        <video id="videoIntro" class="bg-media" autoplay muted playsinline>
+            <source src="intro.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <div class="overlay"></div>
+
+    <div class="navbar">
+        <img src="tms-logo.svg" alt="TMS Estates" class="logo">
+    </div>
+
+    <div class="hero-container">
+        
+        <!-- SOLID GOLD BADGE -->
+        <div class="status-badge">New Website Under Development</div>
+
+        <h1>
+            Beyond Ordinary
+            <span class="gold-text">Estates</span>
+        </h1>
+
+        <p class="message">
+            We are crafting a new digital experience for prestigious residences in Cyprus.
+            <span class="coming-soon-highlight">Coming Soon</span>
+        </p>
+
+        <div class="contact-links">
+            <a href="mailto:info@tmsestates.com">
+                <i data-lucide="mail" style="width:16px;"></i> Enquire
+            </a>
+            <a href="tel:+35700000000">
+                <i data-lucide="phone" style="width:16px;"></i> Contact Us
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // SEAMLESS VIDEO LOGIC
+        const intro = document.getElementById('videoIntro');
+        const loop = document.getElementById('videoLoop');
+
+        // Note: Browsers handle autoplay differently. 
+        // We rely on the 'autoplay' attribute for instant start.
+        
+        intro.addEventListener('ended', () => {
+            // 1. Ensure loop is playing
+            loop.play();
+            
+            // 2. Instantly remove intro from document flow or hide it completely
+            // This prevents any "fade" frames. It cuts straight to the layer below.
+            intro.classList.add('hidden-video'); 
+        });
+
+        // Fail-safe: If intro errors (e.g. file missing), show loop immediately
+        intro.addEventListener('error', () => {
+            intro.classList.add('hidden-video'); 
+            loop.play();
+        });
+    </script>
+</body>
+</html>
